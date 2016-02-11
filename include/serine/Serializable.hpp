@@ -5,6 +5,8 @@
 
 namespace serine {
 
+struct Archiver;
+
 struct Serializable {
   virtual void serialize(Archiver&) = 0;
 };

@@ -1,8 +1,11 @@
 #include <assert.h>
 #include <string>
+#include <iostream>
 
 #include <serine/MemoryArchiver.hpp>
 #include <serine/Serializable.hpp>
+
+#include <serine/StlContainer.hpp>
 
 class MyObject : public serine::Serializable {
 public:
@@ -28,6 +31,18 @@ public:
   }
 };
 
+struct MyLittleStruct : public serine::Serializable {
+  int a, b, c;
+  MyLittleStruct() {}
+  MyLittleStruct(int a, int b, int c) : a(a), b(b), c(c) {}
+  void serialize(serine::Archiver &ar) {
+    std::cout << '[' << this << "]: imma " << (ar.isSaving() ? "saving" : "loading") << std::endl;
+    ar("a", a);
+    ar("b", b);
+    ar("c", c);
+  }
+};
+
 int main(int argc, char **argv) {
   serine::MemoryArchiver ar(serine::MemoryArchiver::Saving);
   {
@@ -37,6 +52,14 @@ int main(int argc, char **argv) {
     obj.text = "bla bla hello I'm error!";
     co.number = 164025573;
     co.serialize(ar);
+
+    std::vector<int> numberwang { 1, 2, 3, 4 };
+    ar("numberwang", serine::contain_stl(numberwang));
+
+    std::vector<MyLittleStruct> strukts;
+    strukts.emplace_back(100, 200, 300);
+    strukts.emplace_back(400, 500, 600);
+    //ar("strukts", serine::contain_stl(strukts));
   }
   // Scroll the archiver back
   ar.data.cursor = 0;
@@ -48,6 +71,14 @@ int main(int argc, char **argv) {
     assert(obj.papers == 1337);
     assert(obj.text == "bla bla hello I'm error!");
     assert(co.number == 164025573);
+
+    std::vector<int> numberwang;
+    ar("numberwang", serine::contain_stl(numberwang));
+    for (int i = 0; i < 4; ++i) {
+      assert(numberwang[i] == i + 1);
+    }
+
+    /*std::vector<MyLittleStruct> strukts;*/
   }
   return 0;
 }
