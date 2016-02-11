@@ -9,11 +9,11 @@ void RawArchiver::operator()(EntryName, Serializable &v) {
 
 void RawArchiver::operator()(EntryName, SerializableContainer &&c) {
   uint32_t len = c.size();
+  ar(sizeof(len), &len);
+  c.resize(len);
   if (len <= 0) {
     return;
   }
-  ar(sizeof(len), &len);
-  c.resize(len);
   do {
     (*c).serialize(*this);
   } while(++c);

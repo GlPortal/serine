@@ -17,7 +17,7 @@ struct MemoryArchiver : public RawArchiver {
   }
 
   void ar(size_t, void*) final override;
-  bool isSaving() const {
+  bool isSaving() const override {
     return mode == Saving;
   }
 };
