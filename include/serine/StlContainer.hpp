@@ -47,10 +47,6 @@ typename std::enable_if< /* Use only if contained is integral
 >::type contain_stl(C<T, U...> &c) {
   return StlContainer<C<T, U...>>(c);
 }
-/*
-template<class C> StlContainer<C> contain_stl(C &c) {
-  return StlContainer<C>(c);
-}*/
 
 } /* namespace serine */
 
