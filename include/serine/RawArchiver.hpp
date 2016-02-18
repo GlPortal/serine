@@ -58,19 +58,48 @@ struct RawArchiver : public Archiver {
     size_t sz = v.size();
     ar(sizeof(sz), &sz);
     v.resize(sz);
-    ar(sizeof(std::string::value_type)*sz, &v[0]);
+    ar(sizeof(std::remove_reference<decltype(v)>::type::value_type)*sz, &v.front());
   }
-  virtual void operator()(EntryName, StringContainer &&c) { iter(c); }
+  virtual void operator()(EntryName, StringContainer &&c) {
+    uint32_t len = c.size();
+    ar(sizeof(len), &len);
+    c.resize(len);
+    if (len <= 0) {
+      return;
+    }
+    do {
+      auto &v = *c;
+      size_t sz = v.size();
+      ar(sizeof(sz), &sz);
+      v.resize(sz);
+      ar(sizeof(std::remove_reference<decltype(v)>::type::value_type)*sz, &v.front());
+    } while(++c);
+  }
+
   virtual void operator()(EntryName, std::u32string &v) {
     size_t sz = v.size();
     ar(sizeof(sz), &sz);
     v.resize(sz);
-    ar(sizeof(std::u32string::value_type), &v[0]);
+    ar(sizeof(std::remove_reference<decltype(v)>::type::value_type)*sz, &v.front());
   }
-  virtual void operator()(EntryName, String32Container &&c) { iter(c); }
+  virtual void operator()(EntryName, String32Container &&c) {
+    uint32_t len = c.size();
+    ar(sizeof(len), &len);
+    c.resize(len);
+    if (len <= 0) {
+      return;
+    }
+    do {
+      auto &v = *c;
+      size_t sz = v.size();
+      ar(sizeof(sz), &sz);
+      v.resize(sz);
+      ar(sizeof(std::remove_reference<decltype(v)>::type::value_type)*sz, &v.front());
+    } while(++c);
+  }
 
   virtual void operator()(EntryName, Serializable&);
-  virtual void operator()(EntryName, SerializableContainer &&c);
+  virtual void operator()(EntryName, SerializableContainer&&);
 };
 
 } /* namespace serine */

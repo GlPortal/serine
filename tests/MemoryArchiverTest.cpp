@@ -36,7 +36,7 @@ struct MyLittleStruct : public serine::Serializable {
   MyLittleStruct() {}
   MyLittleStruct(int a, int b, int c) : a(a), b(b), c(c) {}
   void serialize(serine::Archiver &ar) {
-    std::cout << '[' << this << "]: imma " << (ar.isSaving() ? "saving" : "loading") << std::endl;
+    std::cout << '[' << this << "]: imma " << (ar.isSaving() ? "saving" : "loading") << '!' << std::endl;
     ar("a", a);
     ar("b", b);
     ar("c", c);
@@ -90,14 +90,15 @@ int main(int argc, char **argv) {
 
     std::vector<std::string> strings;
     ar("strings", serine::contain_stl(strings));
-    /*assert(strings[0] == "HO-CH2-CH(NH2)-COOH");
+    assert(strings[0] == "HO-CH2-CH(NH2)-COOH");
     assert(strings[1] == "HO-CH2-CH(NH3)-COO");
-    assert(strings[2] == "C3H7NO3");*/
+    assert(strings[2] == "C3H7NO3");
 
     std::vector<MyLittleStruct> strukts;
     ar("strukts", serine::contain_stl(strukts));
     assert(strukts[0].a == 100 && strukts[0].b == 200 && strukts[0].c == 300);
     assert(strukts[1].a == 400 && strukts[1].b == 500 && strukts[1].c == 600);
   }
+  std::cout << "Aye cap'tain, 'tis all fine! We retrieved the same bottle we sent!" << std::endl;
   return 0;
 }
