@@ -23,7 +23,7 @@ struct Archiver {
   uint64_t version = 0;
 
   /**
-   * Determines wether the Archiver loads or saves the data passed to it.
+   * Determines whether the Archiver loads or saves the data passed to it.
    * @returns `true` if saving, `false` otherwise;
    */
   virtual bool isSaving() const = 0;

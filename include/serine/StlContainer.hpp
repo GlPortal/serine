@@ -32,6 +32,9 @@ struct StlContainer : public Container<T> {
   }
 };
 
+/**
+ * Creates a Container wrapping the given STL-compatible container.
+ */
 template<typename T, typename... U, template<class, typename...> class C>
 typename std::enable_if< /* Use only if contained type inherits from Serializable */
   std::is_base_of<Serializable, typename C<T, U...>::value_type>::value,
