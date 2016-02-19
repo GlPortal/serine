@@ -7,6 +7,9 @@ namespace serine {
 
 struct Archiver;
 
+/** \class Serializable
+ * @brief Base class for structs/classes that can be directly passed to Archivers.
+ */
 struct Serializable {
   virtual void serialize(Archiver&) = 0;
 };

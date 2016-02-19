@@ -5,16 +5,27 @@
 #include <string>
 
 #include <serine/Container.hpp>
+#include <serine/Serializable.hpp>
 
 namespace serine {
 
 struct Serializable;
 
+/** \class Archiver
+ * @brief Base class of all archive reading and writing implementations.
+ */
 struct Archiver {
   using EntryName = const char*;
 
+  /**
+   * 
+   */
   uint64_t version = 0;
 
+  /**
+   * Determines wether the Archiver loads or saves the data passed to it.
+   * @returns `true` if saving, `false` otherwise;
+   */
   virtual bool isSaving() const = 0;
   inline bool isLoading() const {
     return !isSaving();

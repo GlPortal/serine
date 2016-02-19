@@ -1,14 +1,24 @@
 #ifndef SERINE_RAW_ARCHIVER_HPP
 #define SERINE_RAW_ARCHIVER_HPP
 
-#include "Archiver.hpp"
-
 #include <vector>
+
+#include <serine/Archiver.hpp>
 
 namespace serine {
 
+/** \class RawArchiver
+ * @brief Base class for Archivers using raw I/O with unnamed entries.
+ */
 struct RawArchiver : public Archiver {
-  virtual void ar(size_t, void*) = 0;
+  /**
+   * Method used to read or write @ref sz bytes from/to @ref data.
+   */
+  virtual void ar(size_t sz, void *data) = 0;
+  /**
+   * Method used to (un)serialize data in the given container @ref c.
+   * Calls @ref ar() to load/store the container size and data.
+   */
   template<typename T> void iter(Container<T> &c) {
     uint32_t len = c.size();
     ar(sizeof(len), &len);
@@ -83,7 +93,7 @@ struct RawArchiver : public Archiver {
     ar(sizeof(std::remove_reference<decltype(v)>::type::value_type)*sz, &v.front());
   }
   virtual void operator()(EntryName, String32Container &&c) {
-    uint32_t len = c.size();
+    uint32_t len = c.size(); 
     ar(sizeof(len), &len);
     c.resize(len);
     if (len <= 0) {
@@ -98,8 +108,20 @@ struct RawArchiver : public Archiver {
     } while(++c);
   }
 
-  virtual void operator()(EntryName, Serializable&);
-  virtual void operator()(EntryName, SerializableContainer&&);
+  virtual void operator()(EntryName, Serializable &v) {
+    v.serialize(*this);
+  }
+  virtual void operator()(EntryName, SerializableContainer &&c) {
+    uint32_t len = c.size();
+    ar(sizeof(len), &len);
+    c.resize(len);
+    if (len <= 0) {
+      return;
+    }
+    do {
+      (*c).serialize(*this);
+    } while(++c);
+  }
 };
 
 } /* namespace serine */

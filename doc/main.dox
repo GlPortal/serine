@@ -1,0 +1,14 @@
+/** @mainpage Main Page
+
+@anchor mainpage
+
+Welcome to Serine's documentation.
+
+@section basicusage Basic usage
+
+In order to start using Serine, include its `serine/serine.hpp` header, which basically includes
+everything.
+
+@todo Add more docs
+
+*/

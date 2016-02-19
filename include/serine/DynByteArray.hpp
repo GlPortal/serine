@@ -8,10 +8,28 @@
 
 namespace serine {
 
+/** \class DynByteArray
+ * @brief Quick implementation of a flexible byte array, because `std::vector<uint8_t>` wasn't enough.
+ */
 struct DynByteArray {
+  /**
+   * Actual byte array pointer.
+   */
   uint8_t *data;
-  size_t size, cursor;
 
+  /**
+   * Size of the currently allocated @ref data memory block.
+   */
+  size_t size;
+
+  /**
+   * Position of the data @ref put / @ref extract cursor. (offset)
+   */
+  size_t cursor;
+
+  /**
+   * Initializes the byte array with an initial size of @p size.
+   */
   DynByteArray(size_t size = 8) :
     data(nullptr),
     size(0),
@@ -23,6 +41,9 @@ struct DynByteArray {
     std::free(data);
   }
 
+  /**
+   * Resizes the buffer if necessary, making sure at least @p size bytes fit in it.
+   */
   void fit(size_t size) {
     if (size > this->size) {
       this->size = size;
@@ -34,12 +55,18 @@ struct DynByteArray {
     }
   }
 
+  /**
+   * Appends @p sz bytes from @p data into the buffer, starting at cursor position.
+   */
   void put(size_t sz, void *data) {
     fit(cursor + sz);
     std::memcpy(this->data + cursor, data, sz);
     cursor += sz;
   }
 
+  /**
+   * Reads @p sz bytes from the buffer to @p data, starting at cursor position.
+   */
   void extract(size_t sz, void *data) {
     if (cursor + sz > size) {
       throw std::out_of_range("No more data");

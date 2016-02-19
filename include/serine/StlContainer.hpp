@@ -7,6 +7,9 @@
 
 namespace serine {
 
+/** \class StlContainer
+ * @brief Container wrapper implementation targeted at STL-compatible containers.
+ */
 template<class C, typename T = typename C::value_type>
 struct StlContainer : public Container<T> {
   C &container;

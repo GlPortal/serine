@@ -8,11 +8,35 @@
 
 namespace serine {
 
+/** \class Container
+ * @brief Wrapper for data containers.
+ * 
+ * Generic, implementation-hiding wrapper for containers (arrays, vectors, linked lists, ...).
+ * Acts both as a container size modifier and forward iterator.
+ */
 template<typename T> struct Container {
   virtual ~Container() = default;
+
+  /**
+   * Gets the element count of the container.
+   */
   virtual size_t size() const = 0;
+
+  /**
+   * Resizes the container so it holds the specified amount of *valid* (i.e. readable and writable
+   * to) elements.
+   * Expected to be a no-op if the desired number of elements == @ref size().
+   */
   virtual void resize(size_t) = 0;
+
+  /**
+   * Returns a reference to the currently pointed object in the container.
+   */
   virtual T& operator*() = 0;
+
+  /**
+   * Advances the iterator by one. In other words, seek to the next element.
+   */
   virtual bool operator++() = 0;
 };
 
