@@ -1,8 +1,6 @@
 #ifndef SERINE_SERIALIZABLE_HPP
 #define SERINE_SERIALIZABLE_HPP
 
-#include <serine/Archiver.hpp>
-
 namespace serine {
 
 struct Archiver;
